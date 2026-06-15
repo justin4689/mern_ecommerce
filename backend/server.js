@@ -47,14 +47,10 @@ if (process.env.NODE_ENV === "production") {
 	});
 }
 
-// Connexion DB au démarrage du module (compatible serverless)
 connectDB();
 
-// app.listen uniquement en local (pas sur Vercel)
-if (!process.env.VERCEL) {
-	app.listen(PORT, () => {
-		console.log("Server is running on http://localhost:" + PORT);
-	});
-}
+app.listen(PORT, () => {
+	console.log("Server is running on http://localhost:" + PORT);
+});
 
 export default app;
