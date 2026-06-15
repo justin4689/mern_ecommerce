@@ -41,16 +41,19 @@ app.use("/api/analytics", analyticsRoutes);
 
 if (process.env.NODE_ENV === "production") {
 	app.use(express.static(path.join(__dirname, "/frontend/dist")));
-
 	app.get("/{*splat}", (req, res) => {
 		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
 	});
 }
 
+// Connexion DB (avec cache pour les cold starts serverless)
 connectDB();
 
-app.listen(PORT, () => {
-	console.log("Server is running on http://localhost:" + PORT);
-});
+// app.listen uniquement en local — Vercel gère le serveur lui-même
+if (!process.env.VERCEL) {
+	app.listen(PORT, () => {
+		console.log("Server is running on http://localhost:" + PORT);
+	});
+}
 
 export default app;
