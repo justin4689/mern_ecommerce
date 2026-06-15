@@ -1,8 +1,11 @@
 <h1 align="center">E-Commerce Store 🛒</h1>
 
-![Demo App](/frontend/public/screenshot-for-readme.png)
+![Home Page](/frontend/public/screenshort1.png)
+![Product Details Page](/frontend/public/screenshort2.png)
+![Product Login Page](/frontend/public/screenshort3.png)
 
-[Video Tutorial on Youtube](https://youtu.be/sX57TLIPNx8)
+
+
 
 About This Course:
 
