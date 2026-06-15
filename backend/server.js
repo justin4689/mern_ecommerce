@@ -1,7 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import path from "path";
+import morgan from "morgan";
 
 import authRoutes from "./routes/auth.route.js";
 import productRoutes from "./routes/product.route.js";
@@ -19,7 +21,16 @@ const PORT = process.env.PORT || 5000;
 
 const __dirname = path.resolve();
 
-app.use(express.json({ limit: "10mb" })); // allows you to parse the body of the request
+if (process.env.NODE_ENV === "development") {
+	app.use(morgan("dev"));
+}
+
+app.use(cors({
+	origin: process.env.CLIENT_URL,
+	credentials: true,
+}));
+
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);

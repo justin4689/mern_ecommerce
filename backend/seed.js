@@ -5,6 +5,7 @@ dotenv.config({ path: "./backend/.env" });
 
 import User from "./models/user.model.js";
 import Product from "./models/product.model.js";
+import { redis } from "./lib/redis.js";
 
 const users = [
 	{
@@ -218,7 +219,8 @@ const seed = async () => {
 
 		await Product.deleteMany({});
 		await User.deleteMany({});
-		console.log("🗑️  Collections vidées");
+		await redis.del("featured_products");
+		console.log("🗑️  Collections et cache Redis vidés");
 
 		const createdProducts = await Product.insertMany(products);
 		console.log(`✅ ${createdProducts.length} produits insérés`);
