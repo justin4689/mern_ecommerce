@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from "url";
 import morgan from "morgan";
 
 import authRoutes from "./routes/auth.route.js";
@@ -14,11 +15,13 @@ import analyticsRoutes from "./routes/analytics.route.js";
 
 import { connectDB } from "./lib/db.js";
 
-dotenv.config({ path: "./backend/.env" });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const __dirname = path.resolve();
 
 if (process.env.NODE_ENV === "development") {
 	app.use(morgan("dev"));
@@ -40,20 +43,18 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
 if (process.env.NODE_ENV === "production") {
-	app.use(express.static(path.join(__dirname, "/frontend/dist")));
+	const frontendDist = path.join(__dirname, "../frontend/dist");
+	app.use(express.static(frontendDist));
 	app.get("/{*splat}", (req, res) => {
-		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+		res.sendFile(path.join(frontendDist, "index.html"));
 	});
 }
 
 // Connexion DB (avec cache pour les cold starts serverless)
 connectDB();
 
-// app.listen uniquement en local — Vercel gère le serveur lui-même
-if (!process.env.VERCEL) {
-	app.listen(PORT, () => {
-		console.log("Server is running on http://localhost:" + PORT);
-	});
-}
+app.listen(PORT, () => {
+	console.log("Server is running on http://localhost:" + PORT);
+});
 
 export default app;
